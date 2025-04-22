@@ -2,6 +2,8 @@
 
 This repository provides a template for creating Kubernetes workloads, including **Deployments** and **CronJobs**. It includes pre-configured Kustomize files, Skaffold integration, and a `customize` script to quickly set up your application.
 
+> **Note**: The primary purpose of this repository is to enhance my personal containerized development workflow. It is tailored to my specific use cases and may not be well-suited for public or general-purpose use.
+
 ## Features
 
 - **Kubernetes Workload Support**: Pre-configured templates for Deployments and CronJobs.
