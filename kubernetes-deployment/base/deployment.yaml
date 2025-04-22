@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $APP_NAME
+  labels:
+    app: $APP_NAME
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: $APP_NAME
+  template:
+    metadata:
+      labels:
+        app: $APP_NAME
+    spec:
+      containers:
+      - name: $APP_NAME
+        image: ghcr.io/glennpai/$APP_NAME
+        imagePullPolicy: IfNotPresent
+        # env:
+        #   - name: APP_PWD
+        #     valueFrom:
+        #       secretKeyRef:
+        #         name: $APP_NAME-secret
+        #         key: pwd
+        #   - name: APP_HOST
+        #     valueFrom:
+        #       secretKeyRef:
+        #         name: $APP_NAME-secret
+        #         key: host
+        envFrom:
+          - configMapRef:
+              name: $APP_NAME
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: ghcr

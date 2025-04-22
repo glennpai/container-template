@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set +x
+set -e
+set -o pipefail
+
+echo "Hello world from the entrypoint script!"
+
+trap "echo 'SIGINT received. Exiting...'; exit 0" SIGINT
+
+while true; do
+  echo "Sleeping for 5 seconds..."
+  sleep 5
+done
+
+echo "Exiting the entrypoint script!"

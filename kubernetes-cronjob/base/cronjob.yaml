@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: $APP_NAME
+spec:
+  schedule: "0 4 * * *"
+  suspend: true
+  timeZone: "America/New_York"
+  startingDeadlineSeconds: 3600
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: $APP_NAME
+            image: ghcr.io/glennpai/$APP_NAME
+            imagePullPolicy: IfNotPresent
+            # env:
+            #   - name: APP_PWD
+            #     valueFrom:
+            #       secretKeyRef:
+            #         name: $APP_NAME-secret
+            #         key: pwd
+            #   - name: APP_HOST
+            #     valueFrom:
+            #       secretKeyRef:
+            #         name: $APP_NAME-secret
+            #         key: host
+            envFrom:
+              - configMapRef:
+                  name: $APP_NAME
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: ghcr

@@ -1,0 +1,42 @@
+apiVersion: skaffold/v4beta12
+kind: Config
+metadata:
+  name: $APP_NAME
+build:
+  artifacts:
+  - image: ghcr.io/glennpai/$APP_NAME
+    platforms: ["linux/amd64"]
+    docker:
+      dockerfile: Dockerfile
+  local:
+    push: true
+
+profiles:
+  - name: dev
+    activation:
+      - command: dev
+    manifests:
+      kustomize:
+        paths:
+        - kubernetes/dev
+    deploy:
+      kubectl:
+        defaultNamespace: glennc-dev
+
+  - name: stage
+    manifests:
+      kustomize:
+        paths:
+        - kubernetes/stage
+    deploy:
+      kubectl:
+        defaultNamespace: glennc-stage
+
+  - name: prod
+    manifests:
+      kustomize:
+        paths:
+        - kubernetes/prod
+    deploy:
+      kubectl:
+        defaultNamespace: glennc-prod

@@ -1,0 +1,10 @@
+resources:
+  - ../base
+
+patches:
+  - target:
+      group: batch
+      version: v1
+      kind: CronJob
+      name: $APP_NAME
+    path: cronjob-to-job.yaml

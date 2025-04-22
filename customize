@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set +x
+set -e
+set -o pipefail
+
+if [ "$#" -ne 2 ]; then
+  echo "Error: Invalid number of arguments"
+  echo "usage: './customize <workload-type> <app-name>'"
+  echo "example: './customize deployment awesome-app'"
+  echo "example: './customize cronjob price-checker'"
+  exit 1
+fi
+
+WORKLOAD_TYPE=$1
+
+if [ "$WORKLOAD_TYPE" != "deployment" ] && [ "$WORKLOAD_TYPE" != "cronjob" ]; then
+  echo "Error: Invalid workload type"
+  echo "valid options: ['deployment', 'cronjob']"
+  exit 1
+fi
+
+APP_NAME=$(echo "$2" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
+if [[ ! "$APP_NAME" =~ ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$ ]]; then
+  echo "Error: Invalid app name. Must be lowercase, alphanumeric, and can include dashes."
+  exit 1
+fi
+
+if [ "$WORKLOAD_TYPE" == "deployment" ]; then
+  mv ./kubernetes-deployment ./kubernetes
+  rm -rf ./kubernetes-cronjob
+elif [ "$WORKLOAD_TYPE" == "cronjob" ]; then
+  mv ./kubernetes-cronjob ./kubernetes
+  rm -rf ./kubernetes-deployment
+fi
+
+for file in $(grep -rl "\$APP_NAME" .); do
+  sed -i '' "s/\$APP_NAME/$APP_NAME/g" "$file"
+done
+
+rm -rf ./README.md && mv ./README.template.md ./README.md
+
+rm -rf ./customize

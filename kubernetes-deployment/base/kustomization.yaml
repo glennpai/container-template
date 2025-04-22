@@ -1,0 +1,7 @@
+resources:
+  - deployment.yaml
+
+configMapGenerator:
+  - name: $APP_NAME
+    literals:
+      - APP_NAME=$APP_NAME
